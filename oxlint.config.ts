@@ -32,12 +32,25 @@ export default defineConfig({
     "**/components/ui/**",
     "src/shared/hooks/use-mobile.ts",
     "src/shared/hooks/use-highlighted-code.ts",
+    "src/shared/lib/highlighter.tsx",
     "src/shared/lib/utils.ts",
     "src/shared/theme/theme-provider.tsx",
   ],
   // Re-declared on the root so dependency analysers (Knip) see the packages.
   jsPlugins: [...jsPlugins.jsPlugins, ...shadcn.jsPlugins],
   overrides: [
+    {
+      // The table kit is a component implementation: every class it renders
+      // arrives as data (a column's `meta.className`, the sticky header's
+      // surface), so call-site class rules cannot apply inside it. The
+      // classes themselves are still checked where they are authored, in the
+      // `*-columns.tsx` files.
+      files: ["src/shared/components/data-table/**"],
+      rules: {
+        "shadcn/no-restyle": "off",
+        "shadcn/require-static-classes": "off",
+      },
+    },
     {
       // anti-slop on tooling configs is noise: the defensive spreads and
       // typeof guards it flags are the right call when merging a preset.
@@ -54,6 +67,10 @@ export default defineConfig({
     // a size rule is the exact mistake the architecture forbids.
     complexity: "off",
     "react-doctor/no-giant-component": "off",
+    // Passing a library's own function straight through (`onRetry={refetch}`,
+    // `onBlur={field.onBlur}`) is clearer than wrapping it to earn a
+    // `handle*` name.
+    "react/jsx-handler-names": "off",
   },
   // oxlint does not merge `settings` from extended configs, so the js-plugin
   // settings must sit on the root. Curated mode keeps react-doctor's

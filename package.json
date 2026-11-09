@@ -47,6 +47,7 @@
   "devDependencies": {
     "@shadcn/lint": "^0.2.3",
     "@tanstack/devtools-vite": "^0.8.6",
+    "@tanstack/intent": "^0.5.6",
     "@tanstack/react-devtools": "^0.10.14",
     "@tanstack/react-query-devtools": "^5.107.1",
     "@tanstack/react-router-devtools": "^1.167.3",
@@ -63,5 +64,17 @@
     "typescript": "~6.0.2",
     "ultracite": "8.1.1",
     "vite": "^8"
+  },
+  "intent": {
+    "skills": [
+      "@tanstack/react-router",
+      "@tanstack/router-core",
+      "@tanstack/router-plugin",
+      "@tanstack/react-table",
+      "@tanstack/table-core",
+      "@tanstack/table-devtools",
+      "@tanstack/devtools-vite",
+      "ultracite"
+    ]
   }
 }
