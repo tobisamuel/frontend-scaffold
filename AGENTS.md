@@ -1,3 +1,47 @@
+<!-- intent-skills:start -->
+
+## Skill Loading
+
+Use the repository’s installed Intent. If it is unavailable, report the missing dependency instead of downloading a replacement. Before editing files for a substantial task:
+
+- Run `bunx --no-install --package @tanstack/intent intent list` from the workspace root to see available local skills.
+- If a listed skill matches the task, run `bunx --no-install --package @tanstack/intent intent load <package>#<skill>` before changing files.
+- Use the loaded `SKILL.md` guidance while making the change.
+- Monorepos: when working across packages, run the skill check from the workspace root and prefer the local skill for the package being changed.
+- Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
+
+<!-- intent-skills:end -->
+
+# Project rules
+
+This repo is a pattern reference as much as an app. Before changing an area, read its doc; where the generic Ultracite section below disagrees with `docs/`, `docs/` wins.
+
+| Task | Read first |
+| --- | --- |
+| New feature, new file, moving code | `docs/architecture.md` |
+| Routes, loaders, search params, breadcrumbs | `docs/routing.md` |
+| Queries, keys, invalidation, mutations | `docs/data-loading.md` |
+| Skeletons, error and empty states | `docs/loading-and-errors.md` |
+| Any form or filter | `docs/forms.md` |
+| Sheets, dialogs, confirmations | `docs/overlays.md` |
+| Tables, columns, filters and chips | `docs/tables.md` |
+| Deciding where state lives (incl. zustand) | `docs/state.md` |
+| Fixtures, mock requests, wiring a real endpoint | `docs/mocking.md` |
+| Dates, styling, types, comments | `docs/conventions.md` |
+| Lint, format, compiler, devtools, upgrading Ultracite | `docs/tooling.md` |
+
+The rules agents most often break, each explained in its doc:
+
+- `queries.ts` holds query-options builders only. Cache keys come only from those builders: no hand-written key arrays, no key factories, no `queryKey[0]`. Mutations are inline `useMutation` where they are triggered, never named hooks.
+- Loaders `prefetch` and never await. Regions read with `useQuery` and render their own pending/error/empty states inside their chrome. Never `data ?? []`.
+- A sheet is a child route of the list it floats over; the list renders `<Outlet/>`. Create is `/new`, never `?create=true`. Row-menu confirmations are routes; confirmations inside an open sheet are local.
+- `useForm` takes no generics; validation runs on submit; forms receive fetched data as props.
+- A component earns a file or is written inline: no private helper components, no single-use wrappers, no class-name constants. Abstract on the third repetition, and extract a dialog together with its trigger.
+- Dates: inline `format(parseISO(value), ...)`; never `new Date(string)`, never a formatting wrapper.
+- Never refactor to satisfy `complexity` or `no-giant-component`; both are off.
+
+Verify with `bun run typecheck`, `bun run check` and the running app. Use the `mockLatency` and `mockFail` switches (`docs/mocking.md`) to see every state of what you changed.
+
 # Ultracite Code Standards
 
 This project uses **Ultracite**, a zero-config preset that enforces strict code quality standards through automated formatting and linting.
