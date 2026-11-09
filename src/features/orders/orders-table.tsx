@@ -1,9 +1,7 @@
-import type { orderColumns } from "@/features/orders/orders-columns";
-import type {
-  Order,
-  OrdersPage,
-  OrdersSearch,
-} from "@/features/orders/schemas";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+
+import { orderColumns } from "@/features/orders/orders-columns";
+import type { OrdersPage } from "@/features/orders/schemas";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { formatCount } from "@/shared/lib/format";
 import { useAppTable } from "@/shared/lib/table/table";
@@ -11,38 +9,37 @@ import { searchPagination } from "@/shared/lib/table/table-options";
 import { cn } from "@/shared/lib/utils";
 
 /**
- * The loaded orders table: builds the instance from a page that is
- * guaranteed defined by its props type, and draws rows and pagination.
- * Only `OrdersTableRegion` renders it.
+ * The loaded `/orders` table. Its two props are the read's own answer, which
+ * only the region holds: the page (guaranteed defined by the type) and
+ * whether it is a placeholder. Everything the router knows, it asks the
+ * router for: the search it pages through and the navigation a row click
+ * performs.
  */
 export const OrdersTable = ({
-  columns,
   isPlaceholderData,
-  onOpenOrder,
-  onSearchChange,
   page,
-  search,
-  tableKey,
 }: {
-  columns: (typeof orderColumns)[number][];
   /** `keepPreviousData` is showing the last page while the next loads. */
   isPlaceholderData: boolean;
-  onOpenOrder: (order: Order) => void;
-  onSearchChange: (patch: Partial<OrdersSearch>) => void;
   page: OrdersPage;
-  search: OrdersSearch;
-  tableKey: string;
 }) => {
+  const search = useSearch({ from: "/_app/orders" });
+  const navigate = useNavigate({ from: "/orders" });
+
   // `() => null`: the owner of the instance subscribes to nothing; the rows
   // and the pagination bar each subscribe to the slice they draw.
   const table = useAppTable(
     {
-      columns,
+      columns: orderColumns,
       data: page.items,
       getRowId: (row) => row.id,
-      key: tableKey,
+      key: "orders",
       ...searchPagination({
-        onSearchChange,
+        onSearchChange: (patch) =>
+          navigate({
+            replace: true,
+            search: (previous) => ({ ...previous, ...patch }),
+          }),
         rowCount: page.total,
         search,
       }),
@@ -59,7 +56,17 @@ export const OrdersTable = ({
           isPlaceholderData && "opacity-60"
         )}
       >
-        <DataTable className="h-full" onRowClick={onOpenOrder} table={table} />
+        <DataTable
+          className="h-full"
+          onRowClick={(order) =>
+            navigate({
+              params: { orderId: order.id },
+              search: (previous) => previous,
+              to: "/orders/$orderId",
+            })
+          }
+          table={table}
+        />
       </div>
       <table.Pagination resultsLabel={formatCount(page.total, "order")} />
     </table.AppTable>

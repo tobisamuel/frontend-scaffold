@@ -9,7 +9,6 @@ import { PlusIcon } from "lucide-react";
 import { OrdersFilter } from "@/features/orders/orders-filter";
 import { OrdersTableRegion } from "@/features/orders/orders-table-region";
 import { ordersQueryOptions } from "@/features/orders/queries";
-import type { OrdersSearch } from "@/features/orders/schemas";
 import {
   defaultOrdersSearch,
   ordersSearchFields,
@@ -28,65 +27,38 @@ import { Button } from "@/shared/components/ui/button";
  * unmount when a sheet opened (docs/routing.md).
  *
  * The route file composes the page: heading, actions, chips, table region,
- * outlet. Only leaves come from the feature module.
+ * outlet. It passes nothing down: every leaf reads the route's search and
+ * performs its own navigation (docs/architecture.md, "Props").
  */
-const OrdersPage = () => {
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
+const OrdersPage = () => (
+  <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
+    <header className="flex items-center justify-between gap-4">
+      <h1 className="text-2xl font-semibold">Orders</h1>
+      <div className="flex items-center gap-2">
+        <OrdersFilter from="/_app/orders" />
+        <Button
+          nativeButton={false}
+          render={
+            <Link
+              from="/orders"
+              search={(previous) => previous}
+              to="/orders/new"
+            />
+          }
+        >
+          <PlusIcon data-icon="inline-start" />
+          New order
+        </Button>
+      </div>
+    </header>
 
-  // One search sink for Apply, chip removal, Clear and paging. A filter
-  // change resets to the first page; a page change carries its own offset.
-  const updateSearch = (patch: Partial<OrdersSearch>) =>
-    navigate({
-      replace: true,
-      search: (previous) => ({ ...previous, offset: 0, ...patch }),
-    });
+    <ActiveFilters defaults={defaultOrdersSearch} fields={ordersSearchFields} />
 
-  return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
-      <header className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Orders</h1>
-        <div className="flex items-center gap-2">
-          <OrdersFilter onApply={updateSearch} search={search} />
-          <Button
-            nativeButton={false}
-            render={
-              <Link
-                from="/orders"
-                search={(previous) => previous}
-                to="/orders/new"
-              />
-            }
-          >
-            <PlusIcon data-icon="inline-start" />
-            New order
-          </Button>
-        </div>
-      </header>
+    <OrdersTableRegion />
 
-      <ActiveFilters
-        defaults={defaultOrdersSearch}
-        fields={ordersSearchFields}
-        onChange={updateSearch}
-        search={search}
-      />
-
-      <OrdersTableRegion
-        onOpenOrder={(order) =>
-          navigate({
-            params: { orderId: order.id },
-            search: (previous) => previous,
-            to: "/orders/$orderId",
-          })
-        }
-        onSearchChange={updateSearch}
-        request={search}
-      />
-
-      <Outlet />
-    </div>
-  );
-};
+    <Outlet />
+  </div>
+);
 
 export const Route = createFileRoute("/_app/orders")({
   // Options in TanStack's resolution order, not alphabetical: TypeScript

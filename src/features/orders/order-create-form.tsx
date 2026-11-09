@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { customersQueryOptions } from "@/features/customers/queries";
@@ -7,7 +8,6 @@ import type { Customer } from "@/features/customers/schemas";
 import { creditOverrun } from "@/features/orders/lib/credit";
 import { ordersQueryOptions } from "@/features/orders/queries";
 import { createOrder } from "@/features/orders/requests.mock";
-import type { Order } from "@/features/orders/schemas";
 import { createOrderSchema } from "@/features/orders/schemas";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -44,18 +44,13 @@ import { formatMoney } from "@/shared/lib/format";
  * - **A bound computed in render.** The credit limit needs the chosen
  *   customer's record, so `creditOverrun` is a pure function: called in render
  *   for a live message and a disabled submit, and again in the handler.
- * - **The mutation inline**, with screen effects (navigation) passed to
- *   `mutate()` so a request that settles after the user has left cannot pull
- *   them back.
+ * - **The mutation inline**, owning its own navigation: the form knows where
+ *   a created order goes, so no `onCreated` callback is threaded through the
+ *   route. Screen effects ride on `mutate()`.
  */
-export const OrderCreateForm = ({
-  customers,
-  onCreated,
-}: {
-  customers: Customer[];
-  onCreated: (order: Order) => void;
-}) => {
+export const OrderCreateForm = ({ customers }: { customers: Customer[] }) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate({ from: "/orders/new" });
 
   const form = useForm({
     defaultValues: { amount: undefined, customerId: "", note: "" },
@@ -97,7 +92,16 @@ export const OrderCreateForm = ({
       return;
     }
 
-    create.mutate(values, { onSuccess: onCreated });
+    // Navigation rides on this call, so a request that settles after the
+    // user has left cannot pull them back to the new order.
+    create.mutate(values, {
+      onSuccess: (order) =>
+        navigate({
+          params: { orderId: order.id },
+          search: (previous) => previous,
+          to: "/orders/$orderId",
+        }),
+    });
   });
 
   return (

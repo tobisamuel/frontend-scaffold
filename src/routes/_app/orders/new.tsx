@@ -59,18 +59,7 @@ const NewOrderSheet = () => {
             title="We could not load customers"
           />
         ) : null}
-        {customers.data ? (
-          <OrderCreateForm
-            customers={customers.data}
-            onCreated={(order) =>
-              navigate({
-                params: { orderId: order.id },
-                search: (previous) => previous,
-                to: "/orders/$orderId",
-              })
-            }
-          />
-        ) : null}
+        {customers.data ? <OrderCreateForm customers={customers.data} /> : null}
       </SheetContent>
     </Sheet>
   );

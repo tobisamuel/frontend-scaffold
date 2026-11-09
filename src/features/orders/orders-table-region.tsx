@@ -1,47 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSearch } from "@tanstack/react-router";
 
-import {
-  customerOrderColumns,
-  orderColumns,
-} from "@/features/orders/orders-columns";
+import { orderColumns } from "@/features/orders/orders-columns";
 import { OrdersTable } from "@/features/orders/orders-table";
 import { ordersQueryOptions } from "@/features/orders/queries";
-import type {
-  Order,
-  OrdersRequest,
-  OrdersSearch,
-} from "@/features/orders/schemas";
 import { DataTableErrorFrame } from "@/shared/components/data-table/data-table-error-frame";
 import { DataTableSkeleton } from "@/shared/components/data-table/data-table-skeleton";
 
 /**
- * The orders list's read: owns pending, error and the hand-off to the table.
+ * The `/orders` list's read: owns pending, error and the hand-off to the
+ * table. It takes no props. Search comes from its own route, so the route
+ * file renders `<OrdersTableRegion />` and passes nothing down
+ * (docs/architecture.md, "Props").
  *
- * Split from `OrdersTable` at the data boundary because it has to be. The
+ * Split from `OrdersTable` at the data boundary because it has to be: the
  * table instance is a hook, and a hook cannot run after the pending and error
- * early returns. So this component reads and branches, and `OrdersTable`
- * receives a page the type system knows is there: no `data?.items ?? []`,
- * which is how a failed read silently becomes an empty table.
+ * early returns. `OrdersTable` then receives a page the type system knows is
+ * there, so there is no `data?.items ?? []` turning a failed read into an
+ * empty table.
  *
- * Drawn by two routes (the top-level list and a customer's Orders tab), so it
- * takes the request and the two navigations as props instead of reading one
- * route's search.
+ * A customer's Orders tab is a different surface with a different route, so it
+ * has its own pair (`customer-orders-table-region.tsx`) rather than this one
+ * growing props to serve both.
  */
-export const OrdersTableRegion = ({
-  onOpenOrder,
-  onSearchChange,
-  request,
-}: {
-  onOpenOrder: (order: Order) => void;
-  onSearchChange: (patch: Partial<OrdersSearch>) => void;
-  request: OrdersSearch & { customerId?: string };
-}) => {
-  const { data, isError, isPending, isPlaceholderData, refetch } = useQuery(
-    ordersQueryOptions(request satisfies OrdersRequest)
-  );
+export const OrdersTableRegion = () => {
+  const search = useSearch({ from: "/_app/orders" });
 
-  const columns = request.customerId ? customerOrderColumns : orderColumns;
-  const tableKey = request.customerId ? "customer-orders" : "orders";
+  const { data, isError, isPending, isPlaceholderData, refetch } = useQuery(
+    ordersQueryOptions(search)
+  );
 
   // First load only. A page or filter change keeps the previous page through
   // `keepPreviousData`, so `isPending` stays false and the rows never blank.
@@ -49,8 +36,8 @@ export const OrdersTableRegion = ({
     return (
       <DataTableSkeleton
         className="min-h-0 flex-1"
-        columns={columns}
-        rows={request.limit}
+        columns={orderColumns}
+        rows={search.limit}
       />
     );
   }
@@ -61,22 +48,12 @@ export const OrdersTableRegion = ({
     return (
       <DataTableErrorFrame
         className="min-h-0 flex-1"
-        columns={columns}
+        columns={orderColumns}
         onRetry={refetch}
-        tableKey={tableKey}
+        tableKey="orders"
       />
     );
   }
 
-  return (
-    <OrdersTable
-      columns={columns}
-      isPlaceholderData={isPlaceholderData}
-      onOpenOrder={onOpenOrder}
-      onSearchChange={onSearchChange}
-      page={data}
-      search={request}
-      tableKey={tableKey}
-    />
-  );
+  return <OrdersTable isPlaceholderData={isPlaceholderData} page={data} />;
 };

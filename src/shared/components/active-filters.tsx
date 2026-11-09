@@ -1,3 +1,4 @@
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { XIcon } from "lucide-react";
 
 import { Badge } from "@/shared/components/ui/badge";
@@ -6,28 +7,40 @@ import type { FilterFields, FilterPatch } from "@/shared/lib/filters";
 import { activeFilterChips, clearedFilters } from "@/shared/lib/filters";
 
 /**
- * The applied-filter row. Nothing here is per-feature: label and sentence both
- * come off the schema's filter registry (`shared/lib/filters.ts`), so a list
- * declares them once on its search schema and writes no chip JSX.
+ * The applied-filter row for whichever list route it is drawn in. Nothing here
+ * is per-feature: chip labels and sentences come off the schema's filter
+ * registry (`shared/lib/filters.ts`), and the search it reads and writes is
+ * the current route's, so a list passes only its contract and writes no chip
+ * JSX and no search callback.
  */
-export const ActiveFilters = <TSearch extends object>({
+export const ActiveFilters = ({
   defaults,
   fields,
-  onChange,
-  search,
 }: {
   /** `schema.parse({})`: the same object the route hands `stripSearchParams`. */
-  defaults: TSearch;
+  // oxlint-disable-next-line anti-slop/no-object-parameters -- generic over every list's search contract.
+  defaults: object;
+  /** The search schema's `.shape`, walked for registered filters. */
   fields: FilterFields;
-  /** The route's search sink, the same one Apply uses. */
-  onChange: (patch: Partial<TSearch>) => void;
-  search: TSearch;
 }) => {
+  // Not strict: this is drawn under every list route, and the registry walk
+  // only needs an object to read keys from.
+  const search = useSearch({ strict: false });
+  const navigate = useNavigate();
   const chips = activeFilterChips(fields, search);
 
   if (chips.length === 0) {
     return null;
   }
+
+  // A filter change restarts at the first page. `to: "."` stays on the
+  // current route, whichever list that is.
+  const update = (patch: FilterPatch) =>
+    navigate({
+      replace: true,
+      search: (previous: FilterPatch) => ({ ...previous, ...patch, offset: 0 }),
+      to: ".",
+    });
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -37,11 +50,9 @@ export const ActiveFilters = <TSearch extends object>({
           render={
             <button
               aria-label={`Remove ${chip.label} filter: ${chip.value}`}
-              // SAFETY: the key came from `fields`, the shape `defaults` was parsed from, so the patch is a subset of TSearch.
+              // SAFETY: `defaults` was parsed from the schema whose shape `fields` is, so every chip key exists on it.
               onClick={() =>
-                onChange({
-                  [chip.key]: (defaults as FilterPatch)[chip.key],
-                } as Partial<TSearch>)
+                update({ [chip.key]: (defaults as FilterPatch)[chip.key] })
               }
               type="button"
             />
@@ -55,10 +66,7 @@ export const ActiveFilters = <TSearch extends object>({
       ))}
 
       <Button
-        // SAFETY: `clearedFilters` only emits keys found in `fields`, so the patch is a subset of TSearch.
-        onClick={() =>
-          onChange(clearedFilters(fields, defaults) as Partial<TSearch>)
-        }
+        onClick={() => update(clearedFilters(fields, defaults))}
         size="xs"
         variant="ghost"
       >
