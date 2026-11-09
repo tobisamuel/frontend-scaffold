@@ -20,6 +20,8 @@ A list is two components in two files, because a hook can't run after an early r
 - **`<name>-table-region.tsx`** reads the query and returns the skeleton on first load, the error frame on `isError && !data`, or the table.
 - **`<name>-table.tsx`** receives the page as a required prop, builds the instance and draws the rows and pagination. Since the page can't be undefined, there's no `data ?? []`.
 
+Both read their route themselves: the region its search, the table its search plus `useNavigate({ from })` for paging and row clicks. The region takes no props and the table takes only `page` and `isPlaceholderData`. An entity listed on two surfaces gets one pair per surface (`orders-table*` and `customer-orders-table*`), never one pair configured by props.
+
 ## Server pagination
 
 `searchPagination({ onSearchChange, rowCount, search })` returns `manualPagination`, the controlled `pagination` state derived from `limit`/`offset`, and the handler that writes changes back to the URL. `manualPagination` stops the client from re-slicing and stops `autoResetPageIndex` from writing page 0 back on every new response. `rowCount` is the server's total. Changing the page size restarts at page 1.

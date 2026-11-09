@@ -28,8 +28,8 @@ TanStack Router with file-based routes under `src/routes/`, code-split automatic
 - Each list declares a zod search schema: filters (registered for chips, see [tables.md](tables.md)) plus `paginationParamsSchema`. `validateSearch: schema`, with `stripSearchParams(defaults)` so the URL reads `/orders`, not `/orders?limit=25&offset=0`.
 - A date range is one field, `{ from, to }` as ISO date strings, never a `from_date`/`to_date` pair.
 - Write search functionally, `search: (previous) => ({ ...previous, ...patch })`, so a patch merges into the router's current search rather than a copy captured at render.
-- One `updateSearch` sink per list serves Apply, chip removal, Clear and paging. A filter change resets `offset` to 0; a page change carries its own.
-- Single-route consumers read their route through `Route.useSearch()` in the route file or `getRouteApi("/_app/customers/")` elsewhere. A leaf drawn by two routes takes search and callbacks as props instead (`OrdersTableRegion`).
+- The component that changes search writes it, with `useNavigate({ from })`: the filter on Apply, a chip on remove, the table on a page change. A filter change resets `offset` to 0; a page change carries its own. The route never builds an `updateSearch` to pass down.
+- Components read their route's search and params with `useSearch({ from })` / `useParams({ from })`, never as props. A leaf drawn on two surfaces gets one pair of components per surface, each reading its own route (`OrdersTableRegion`, `CustomerOrdersTableRegion`), not one component told by props which route it is on. See "Props" in [architecture.md](architecture.md).
 
 ## Breadcrumbs
 

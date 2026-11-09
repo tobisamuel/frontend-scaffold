@@ -35,6 +35,7 @@ The rules agents most often break, each explained in its doc:
 - `queries.ts` holds query-options builders only. Cache keys come only from those builders: no hand-written key arrays, no key factories, no `queryKey[0]`. Mutations are inline `useMutation` where they are triggered, never named hooks.
 - Loaders `prefetch` and never await. Regions read with `useQuery` and render their own pending/error/empty states inside their chrome. Never `data ?? []`.
 - A sheet is a child route of the list it floats over; the list renders `<Outlet/>`. Create is `/new`, never `?create=true`. Row-menu confirmations are routes; confirmations inside an open sheet are local.
+- A prop must carry what the component cannot get itself. Never pass route search, params, search setters or navigation callbacks (`onOpenX`, `onCreated`, `onApply`, `updateSearch`) down from a route: components read `useSearch`/`useParams({ from })` and navigate with `useNavigate({ from })`. Two surfaces get two zero-prop components, not one configured by props. See "Props" in `docs/architecture.md`.
 - `useForm` takes no generics; validation runs on submit; forms receive fetched data as props.
 - A component earns a file or is written inline: no private helper components, no single-use wrappers, no class-name constants. Abstract on the third repetition, and extract a dialog together with its trigger.
 - Dates: inline `format(parseISO(value), ...)`; never `new Date(string)`, never a formatting wrapper.

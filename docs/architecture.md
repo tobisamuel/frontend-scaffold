@@ -67,6 +67,22 @@ A module only has the slots it needs. When something exists, it lives in its nam
 
 **Class names are written inline, in full.** No `const LABEL_CLASS = "..."`, no class strings exported for reuse. A primitive's variants live in its own `cva` or `data-*` attributes; share markup through a component, never through a string.
 
+## Props
+
+**A prop must carry something the component cannot get for itself.** The test: delete the prop, and if the component could still do the right thing through the router, Query, a store or context, the prop was never earned. The route is not the only thing allowed to read the router.
+
+| Earned | Not earned |
+| --- | --- |
+| A record or identity the caller already holds and the child cannot look up: `order` on `CancelOrderFlow`, `orderId` on the sheet body | Route search or params: read them with `useSearch({ from })` / `useParams({ from })` |
+| A read's own answer handed across the hook boundary: `page` and `isPlaceholderData` from a region to its table | Navigation callbacks (`onOpenOrder`, `onCreated`, `onClose`): the component that performs the action navigates, with `useNavigate({ from })` |
+| Data fetched upfront for a form: `customers` on `OrderCreateForm` (forms.md) | A search setter (`onSearchChange`, `onApply`, an `updateSearch` built in the route): the component that changes search writes it |
+| A primitive's behaviour that varies per call site: `onOpenChange` on a sheet, `onRowClick` on the shared `DataTable`, `onRetry` | Configuration that only says which surface the component is on (`columns`, `tableKey`, `customerId`): split per surface instead |
+| One identity naming a surface when two surfaces share one contract and one component: `from` on `OrdersFilter` | Values derivable from a record already passed: pass the record, derive inside |
+
+When the same component would need different props on two routes, write one component per surface, each reading its own route (`OrdersTable` and `CustomerOrdersTable`). That is the entity owning both surfaces, not duplication to avoid. A shared component in `shared/` that is generic over every route (`ActiveFilters`) reads the current route loosely (`useSearch({ strict: false })`, `navigate({ to: "." })`) and takes only its contract.
+
+Route files therefore pass almost nothing down. `routes/_app/orders/route.tsx` renders `<OrdersFilter from="/_app/orders" />`, `<ActiveFilters fields defaults />` and `<OrdersTableRegion />`, and every leaf does its own reading and navigating.
+
 ## Names
 
 - Use the domain's nouns and verbs. Don't abbreviate, except for wire terms the backend spells that way.
