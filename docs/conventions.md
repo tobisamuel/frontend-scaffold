@@ -16,11 +16,17 @@ Small rules that drift when nobody writes them down. Each one was the majority p
 
 ## Styling
 
-- Write class names inline and in full, and never store them in constants. Repetition is fine; Tailwind is built for it.
-- Don't restyle a primitive's colour, typography or effects from outside. `shadcn/no-restyle` enforces this, and layout (margin, width, flex, position) is allowed. When the design needs a different look, add a variant to the primitive and record why.
-- Write a style in markup rather than reaching for `!important`. Every `!` written in the reference repos was later deleted.
-- Use lucide icons directly (`<PlusIcon data-icon="inline-start" />`). shadcn's button and badge size and space them through `data-icon`.
-- Edits to `shared/components/ui/*` are vendor edits. They're lint-exempt so `shadcn add -o` stays diffable, so record what changed and why in the commit message.
+Every colour, type step and radius comes from the token layer, `src/shared/theme/tokens.css`. Read its header before adding a colour.
+
+- **Type is a named scale, never a size pair.** `text-heading-lg` (page titles), `text-heading-md` (figures, sheet titles), `text-body-md` (default body), `text-body-sm` (table headers, controls), `text-caption-lg` (badges, metadata). Each step carries its own line height and tracking, so never add `leading-*` or `tracking-*` beside one, and never write `text-sm`, `text-xs` or `text-[13px]`.
+- **Colour is a role.** Text uses `text-ink-heading`, `text-ink-body-1/2` or `text-ink-caption-1/2`. Raised fills use `bg-surface-1/2/3`, where the number is the elevation. Edges use `border-stroke-1/2`, and dividers inside a surface use `border-hairline`. Icons use `text-icon-1/2/3`. Never use `text-muted-foreground` or a raw colour in app code.
+- **Colour means status and nothing else.** Status badges use the tone variants `green`, `blue`, `yellow`, `red` and `neutral`. The variant is a colour, never a status, and each feature's status meta (`orderStatusMeta`) picks one. A call site knows where a status is shown, never which colour it is.
+- **The primary action is ink:** black on light, white on dark. Use a single primary button per surface.
+- **Pages** use `px-4 pt-4` and an 18px (`gap-4.5`) rhythm, with an `h1` at `text-heading-lg font-semibold text-ink-heading`. The shell caps content at 1508px, left-aligned.
+- Write class names inline and in full, and never store them in constants.
+- Don't restyle a primitive's colour, typography, spacing or shape from outside. `shadcn/no-restyle` enforces this and allows layout. Put layout on a plain wrapper. When the design needs a different look, change the primitive (a vendor edit, listed in [tooling.md](tooling.md)) or add a variant.
+- Write a style in markup rather than reaching for `!important`.
+- Use lucide icons directly (`<PlusIcon data-icon="inline-start" />`). Buttons and badges size and space them through `data-icon`; sidebar rows put each glyph in a 22px slot.
 
 ## TypeScript
 

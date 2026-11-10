@@ -28,7 +28,7 @@ src/
     ├── lib/                filters, date-range, format, query-key, table/
     ├── components/         data-table/, active-filters, route panels
     │   └── ui/             vendored shadcn primitives, not ours to reshape
-    └── theme/
+    └── theme/              tokens.css (the design tokens), theme-provider
 ```
 
 `shared/` never imports from `features/` or `routes/`. When a "shared" helper needs a domain type, it is not shared; move it to the domain. App chrome is `features/shell/` rather than `shared/` for this reason: the sidebar reads the customers store.

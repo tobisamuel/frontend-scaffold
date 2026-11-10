@@ -57,4 +57,13 @@ Repeat this whenever ultracite or react-doctor ships a release, so the config on
 
 ## shadcn
 
-`components.json` uses the `base-nova` style (Base UI primitives) with aliases under `@/shared/...`. The root `tsconfig.json` carries `paths` because the CLI reads the root file, not the referenced `tsconfig.app.json`. Without it, `shadcn add` writes to a literal `@/` folder. The primitives were installed with `shadcn add -a` and committed as shipped, so every later edit to them shows up as a diff.
+`components.json` uses the `base-nova` style (Base UI primitives) with aliases under `@/shared/...`. The root `tsconfig.json` carries `paths` because the CLI reads the root file, not the referenced `tsconfig.app.json`. Without it, `shadcn add` writes to a literal `@/` folder. The primitives were installed with `shadcn add -a` and committed as shipped, so every later edit to them shows up as a diff. Edits made since, all onto the token layer:
+
+| Primitive | Change |
+| --- | --- |
+| `sidebar.tsx` | Rows: 4px corners, `px-2 py-1.5`, `text-body-md` in `ink-body-2`, 22px icon slots in `icon-3`, `surface-2` hover and active, 38px squares in the icon rail. Group labels in `caption-lg`/`ink-caption-1`. |
+| `table.tsx` | Rules on the cells (so a sticky header keeps its line), `h-[46.7px]` cell floor (a minimum in table layout, so tall cells still grow), headers in `body-sm`/`ink-caption-1`, `surface-1` row hover. |
+| `badge.tsx` | 4px corners, `caption-lg`, and the tone variants `neutral`/`green`/`blue`/`yellow`/`red`. |
+| `scroll-area.tsx` | Removed an unused `React` import that failed `tsc`. |
+
+Widths that only the app knows (`--sidebar-width`, `--sidebar-width-icon`) are set on `SidebarProvider` in `routes/_app/route.tsx`, not edited into the primitive.
