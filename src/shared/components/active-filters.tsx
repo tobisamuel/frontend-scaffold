@@ -59,7 +59,7 @@ export const ActiveFilters = ({
           }
           variant="secondary"
         >
-          <span className="text-muted-foreground">{chip.label}</span>
+          <span className="text-ink-caption-1">{chip.label}</span>
           {chip.value}
           <XIcon data-icon="inline-end" />
         </Badge>

@@ -63,7 +63,7 @@ export const CancelOrderFlow = ({ order }: { order: Order }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         {cancel.isError ? (
-          <p className="text-sm text-destructive" role="alert">
+          <p className="text-body-sm text-red-500" role="alert">
             {cancel.error.message}
           </p>
         ) : null}

@@ -138,7 +138,7 @@ export const CustomersFilter = () => {
                       onSelect={(range) => field.onChange(fromDateRange(range))}
                       selected={toDateRange(field.value)}
                     />
-                    <p className="mt-auto text-xs text-muted-foreground">
+                    <p className="mt-auto text-caption-lg text-ink-caption-1">
                       {formatDateRange(field.value) ?? "Any date"}
                     </p>
                   </div>

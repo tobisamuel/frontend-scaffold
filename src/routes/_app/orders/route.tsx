@@ -31,9 +31,9 @@ import { Button } from "@/shared/components/ui/button";
  * performs its own navigation (docs/architecture.md, "Props").
  */
 const OrdersPage = () => (
-  <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
+  <div className="flex min-h-0 flex-1 flex-col gap-4.5 px-4 pt-4 pb-2">
     <header className="flex items-center justify-between gap-4">
-      <h1 className="text-2xl font-semibold">Orders</h1>
+      <h1 className="text-heading-lg font-semibold text-ink-heading">Orders</h1>
       <div className="flex items-center gap-2">
         <OrdersFilter from="/_app/orders" />
         <Button

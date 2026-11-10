@@ -7,8 +7,8 @@ import { prefetch } from "@/shared/api/query-client";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/shared/components/ui/card";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 
@@ -34,53 +34,55 @@ const HomePage = () => {
   );
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold">Overview</h1>
+    <div className="flex flex-col gap-6 px-4 pt-4 pb-2">
+      <h1 className="text-heading-lg font-semibold text-ink-heading">
+        Overview
+      </h1>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Pending orders</CardTitle>
+            <CardDescription>Pending orders</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold tabular-nums">
+            <div className="text-heading-md font-semibold text-ink-heading tabular-nums">
               {pendingOrders.isPending ? (
                 <Skeleton className="h-9 w-16" />
               ) : (
                 (pendingOrders.data?.total ?? "—")
               )}
-            </p>
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>All orders</CardTitle>
+            <CardDescription>All orders</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold tabular-nums">
+            <div className="text-heading-md font-semibold text-ink-heading tabular-nums">
               {allOrders.isPending ? (
                 <Skeleton className="h-9 w-16" />
               ) : (
                 (allOrders.data?.total ?? "—")
               )}
-            </p>
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Active customers</CardTitle>
+            <CardDescription>Active customers</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold tabular-nums">
+            <div className="text-heading-md font-semibold text-ink-heading tabular-nums">
               {activeCustomers.isPending ? (
                 <Skeleton className="h-9 w-16" />
               ) : (
                 (activeCustomers.data?.total ?? "—")
               )}
-            </p>
+            </div>
           </CardContent>
         </Card>
       </div>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-body-md text-ink-caption-1">
         Start from{" "}
         <Link className="underline underline-offset-4" to="/orders">
           orders

@@ -65,7 +65,7 @@ export const Pagination = ({ resultsLabel }: { resultsLabel?: string }) => {
               </Button>
               <span
                 aria-live="polite"
-                className="min-w-12 text-center text-xs tabular-nums"
+                className="min-w-12 text-center text-caption-lg text-ink-body-2 tabular-nums"
               >
                 {pageIndex + 1} / {pageCount}
               </span>
@@ -90,7 +90,7 @@ export const Pagination = ({ resultsLabel }: { resultsLabel?: string }) => {
             </div>
 
             {resultsLabel ? (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-caption-lg text-ink-caption-1">
                 {resultsLabel}
               </span>
             ) : null}

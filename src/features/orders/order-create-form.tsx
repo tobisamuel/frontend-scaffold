@@ -134,7 +134,7 @@ export const OrderCreateForm = ({ customers }: { customers: Customer[] }) => {
                   {customers.map((option) => (
                     <SelectItem key={option.id} value={option.id}>
                       {option.name}
-                      <span className="text-muted-foreground">
+                      <span className="text-ink-caption-1">
                         {option.company}
                       </span>
                     </SelectItem>
@@ -208,7 +208,7 @@ export const OrderCreateForm = ({ customers }: { customers: Customer[] }) => {
       </FieldGroup>
 
       {create.isError ? (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="text-body-sm text-red-500" role="alert">
           {create.error.message}
         </p>
       ) : null}

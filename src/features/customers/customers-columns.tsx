@@ -13,7 +13,7 @@ export const customerColumns = columnHelper.columns([
     cell: ({ getValue, row }) => (
       <div className="flex flex-col">
         <span className="font-medium">{getValue()}</span>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-caption-lg text-ink-caption-1">
           {row.original.email}
         </span>
       </div>
@@ -45,7 +45,7 @@ export const customerColumns = columnHelper.columns([
   columnHelper.accessor("created_at", {
     cell: ({ getValue }) => format(parseISO(getValue()), "MMM d, yyyy"),
     header: "Joined",
-    meta: { className: "text-muted-foreground" },
+    meta: { className: "text-ink-caption-1" },
     size: 130,
   }),
 ]);

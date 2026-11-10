@@ -55,7 +55,7 @@ const CustomerLayout = () => {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 p-6">
+    <div className="flex min-h-0 flex-1 flex-col gap-4.5 px-4 pt-4 pb-2">
       <header className="flex flex-col gap-1">
         {isPending ? (
           <>
@@ -65,29 +65,34 @@ const CustomerLayout = () => {
         ) : (
           <>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold">{customer.name}</h1>
+              <h1 className="text-heading-lg font-semibold text-ink-heading">
+                {customer.name}
+              </h1>
               <Badge variant={customerStatusMeta[customer.status].variant}>
                 {customerStatusMeta[customer.status].label}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body-md text-ink-caption-1">
               {customer.company} · {customer.email}
             </p>
           </>
         )}
       </header>
 
-      <nav aria-label="Customer sections" className="flex gap-1 border-b">
+      <nav
+        aria-label="Customer sections"
+        className="flex gap-4 border-b-hairline border-stroke-1"
+      >
         <Link
           activeOptions={{ exact: true }}
-          className="-mb-px border-b-2 border-transparent px-3 py-2 text-sm text-muted-foreground data-[status=active]:border-foreground data-[status=active]:text-foreground"
+          className="-mb-px border-b-2 border-transparent px-3 py-2 text-body-md text-ink-caption-1 data-[status=active]:border-foreground data-[status=active]:text-foreground"
           params={{ customerId }}
           to="/customers/$customerId"
         >
           Overview
         </Link>
         <Link
-          className="-mb-px border-b-2 border-transparent px-3 py-2 text-sm text-muted-foreground data-[status=active]:border-foreground data-[status=active]:text-foreground"
+          className="-mb-px border-b-2 border-transparent px-3 py-2 text-body-md text-ink-caption-1 data-[status=active]:border-foreground data-[status=active]:text-foreground"
           params={{ customerId }}
           to="/customers/$customerId/orders"
         >

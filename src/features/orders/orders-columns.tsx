@@ -61,7 +61,7 @@ const totalColumn = columnHelper.accessor("total", {
 const createdColumn = columnHelper.accessor("created_at", {
   cell: ({ getValue }) => format(parseISO(getValue()), "MMM d, yyyy, h:mm a"),
   header: "Created",
-  meta: { className: "text-muted-foreground" },
+  meta: { className: "text-ink-caption-1" },
   size: 190,
 });
 

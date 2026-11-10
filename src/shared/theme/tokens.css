@@ -1,0 +1,259 @@
+/* ────────────────────────────────────────────────────────────────────────────
+   Design tokens. The token layer only: no Tailwind, shadcn or font imports.
+
+   Two layers, and `@theme inline` is the seam between them:
+
+     raw variables   :root / .dark    named by role (surface, ink, icon,
+                                      stroke), the values a designer quotes
+     utilities       @theme inline    named the way Tailwind and shadcn read
+                                      (`bg-surface-1`, `text-ink-body-1`)
+
+   shadcn's own slots (`--background`, `--primary`, `--sidebar-accent`, …) are
+   aliases onto the raw variables, never parallel literals, so two names for
+   one colour cannot drift apart.
+
+   The structure follows a production design system: a monochrome surface
+   ladder that carries elevation in its number, ink roles for text, icon
+   roles, hairline strokes, a named type scale with line height and tracking
+   baked into each step, and colour reserved for status tones. Swap the raw
+   values for your brand; keep the names.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@theme inline {
+  --font-sans: "Geist Variable", "Geist", sans-serif;
+  --font-heading: var(--font-sans);
+
+  /* Type scale. Sizes are rem so the scale follows the reader's browser
+     setting; line heights are unitless ratios written as the design's two
+     numbers, so a size override never strands a px leading. Use these, never
+     a `text-[13px] leading-5` pair: the step is the whole style. */
+  --text-heading-lg: 2rem; /* 32 / 40 — page titles */
+  --text-heading-lg--line-height: calc(40 / 32);
+  --text-heading-lg--letter-spacing: -0.02em;
+  --text-heading-md: 1.5rem; /* 24 / 32 — figures, sheet titles */
+  --text-heading-md--line-height: calc(32 / 24);
+  --text-heading-md--letter-spacing: -0.01em;
+  --text-body-lg: 1rem; /* 16 / 24 */
+  --text-body-lg--line-height: calc(24 / 16);
+  --text-body-md: 0.875rem; /* 14 / 22 — the default body */
+  --text-body-md--line-height: calc(22 / 14);
+  --text-body-md--letter-spacing: 0.01em;
+  --text-body-sm: 0.8125rem; /* 13 / 19.5 — table headers, controls */
+  --text-body-sm--line-height: calc(19.5 / 13);
+  --text-caption-lg: 0.75rem; /* 12 / 15 — badges, meta */
+  --text-caption-lg--line-height: calc(15 / 12);
+  --text-caption-sm: 0.625rem; /* 10 / 12 */
+  --text-caption-sm--line-height: calc(12 / 10);
+
+  /* Surfaces: the page, then raised steps in front of it. The number is the
+     elevation. */
+  --color-surface: var(--surface-background);
+  --color-surface-1: var(--surface-foreground-1); /* row hover, cards */
+  --color-surface-2: var(--surface-foreground-2); /* nav hover/active */
+  --color-surface-3: var(--surface-foreground-3);
+  --color-menu: var(--surface-menu);
+  --color-stroke-1: var(--surface-stroke-1); /* edges, table rules */
+  --color-stroke-2: var(--surface-stroke-2); /* separators, input edges */
+
+  /* Ink: text roles. `ink` rather than `text` so `text-ink-heading` does not
+     collide with the type scale's `text-heading-*`. */
+  --color-ink-heading: var(--ink-heading);
+  --color-ink-body-1: var(--ink-body-1);
+  --color-ink-body-2: var(--ink-body-2);
+  --color-ink-caption-1: var(--ink-caption-1);
+  --color-ink-caption-2: var(--ink-caption-2);
+
+  --color-icon-1: var(--icon-1); /* active */
+  --color-icon-2: var(--icon-2);
+  --color-icon-3: var(--icon-3); /* resting nav icons */
+  --color-icon-disabled: var(--icon-disabled);
+
+  /* Status tones: a tint, an edge and a solid per hue. Colour means status
+     here and nowhere else. */
+  --color-red-50: var(--red-50);
+  --color-red-150: var(--red-150);
+  --color-red-500: var(--red-500);
+  --color-blue-50: var(--blue-50);
+  --color-blue-150: var(--blue-150);
+  --color-blue-500: var(--blue-500);
+  --color-green-50: var(--green-50);
+  --color-green-150: var(--green-150);
+  --color-green-500: var(--green-500);
+  --color-yellow-50: var(--yellow-50);
+  --color-yellow-150: var(--yellow-150);
+  --color-yellow-500: var(--yellow-500);
+
+  /* The one stroke the spacing scale cannot express: dividers inside a
+     surface read a step too heavy at 1px. A real Tailwind v4 namespace, so
+     `border-hairline`, `border-b-hairline` and friends all work. */
+  --border-width-hairline: var(--stroke-hairline);
+
+  /* Menus lay a soft edge of the raised surface under themselves instead of
+     darkening what they sit over, so dark mode gets a dark edge for free. */
+  --shadow-menu-md: 0 8px 15px 0 var(--surface-foreground-1);
+  --shadow-menu-lg: 0 15px 20px 0 var(--surface-foreground-1);
+
+  /* shadcn slots, read by every primitive. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radii derive from one base, so shadcn's `rounded-lg` is the dominant
+     corner and the rest scale off it. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --surface-background: oklch(1 0 0); /* #ffffff */
+  --surface-foreground-1: oklch(0.9791 0 0); /* #f8f8f8 */
+  --surface-foreground-2: oklch(0.9581 0 0); /* #f1f1f1 */
+  --surface-foreground-3: oklch(0.937 0 0); /* #eaeaea */
+  --surface-menu: oklch(1 0 0); /* #ffffff */
+  --surface-stroke-1: oklch(0.937 0 0); /* #eaeaea */
+  --surface-stroke-2: oklch(0.9158 0 0); /* #e3e3e3 */
+  --stroke-hairline: 0.7px;
+
+  --ink-heading: oklch(0 0 0); /* #000000 */
+  --ink-body-1: oklch(0.3829 0 0); /* #434343 */
+  --ink-body-2: oklch(0.4349 0 0); /* #515151 */
+  --ink-caption-1: oklch(0.5931 0 0); /* #7e7e7e */
+  --ink-caption-2: oklch(0.6895 0 0); /* #9b9b9b */
+
+  --icon-1: oklch(0 0 0); /* #000000 */
+  --icon-2: oklch(0.4349 0 0); /* #515151 */
+  --icon-3: oklch(0.5931 0 0); /* #7e7e7e */
+  --icon-disabled: oklch(0.7858 0 0); /* #b9b9b9 */
+
+  --red-50: oklch(0.9424 0.0242 20.7); /* #fce6e5 */
+  --red-150: oklch(0.8859 0.0499 19.7); /* #f9cdcc */
+  --red-500: oklch(0.6099 0.2126 27.2); /* #e73733 */
+  --blue-50: oklch(0.9641 0.0185 243); /* #e9f5ff */
+  --blue-150: oklch(0.8957 0.0558 241.9); /* #bde2ff */
+  --blue-500: oklch(0.6832 0.1751 248.6); /* #229eff */
+  --green-50: oklch(0.9816 0.0263 163.2); /* #eafff4 */
+  --green-150: oklch(0.9176 0.0701 161.2); /* #bbf3d5 */
+  --green-500: oklch(0.5999 0.1642 150.3); /* #009a47 */
+  --yellow-50: oklch(0.9776 0.0251 86.9); /* #fff7e5 */
+  --yellow-150: oklch(0.956 0.0487 86.4); /* #ffefcc */
+  --yellow-500: oklch(0.6867 0.144 76.4); /* #cc8c00 */
+
+  /* The primary action is ink: black on light, white on dark. */
+  --action: oklch(0.205 0 0); /* #171717 */
+  --action-foreground: oklch(1 0 0);
+}
+
+.dark {
+  --surface-background: oklch(0.1543 0 0); /* #0c0c0c */
+  --surface-foreground-1: oklch(0.1822 0 0); /* #121212 */
+  --surface-foreground-2: oklch(0.209 0 0); /* #181818 */
+  --surface-foreground-3: oklch(0.2645 0 0); /* #252525 */
+  --surface-menu: oklch(0.209 0 0); /* #181818 */
+  --surface-stroke-1: oklch(0.209 0 0); /* #181818 */
+  --surface-stroke-2: oklch(0.3132 0 0); /* #313131 */
+
+  --ink-heading: oklch(1 0 0); /* #ffffff */
+  --ink-body-1: oklch(0.8141 0 0); /* #c2c2c2 */
+  --ink-body-2: oklch(0.7219 0 0); /* #a5a5a5 */
+  --ink-caption-1: oklch(0.6731 0 0); /* #969696 */
+  --ink-caption-2: oklch(0.5727 0 0); /* #787878 */
+
+  --icon-1: oklch(1 0 0); /* #ffffff */
+  --icon-2: oklch(0.7668 0 0); /* #b3b3b3 */
+  --icon-3: oklch(0.6731 0 0); /* #969696 */
+  --icon-disabled: oklch(0.3132 0 0); /* #313131 */
+
+  --red-50: oklch(0.1886 0.0747 30.4); /* #2d0100 */
+  --red-150: oklch(0.2952 0.119 29.8); /* #5a0200 */
+  --red-500: oklch(0.6099 0.2126 27.2); /* #e73733 */
+  --blue-50: oklch(0.2352 0.0478 244.8); /* #072033 */
+  --blue-150: oklch(0.3576 0.0843 247.5); /* #0e3f66 */
+  --blue-500: oklch(0.6832 0.1751 248.6); /* #229eff */
+  --green-50: oklch(0.2396 0.0593 155); /* #002712 */
+  --green-150: oklch(0.3681 0.0965 152.2); /* #004d24 */
+  --green-500: oklch(0.7499 0.176 153.9); /* #2fcd78 */
+  --yellow-50: oklch(0.2685 0.0552 83); /* #332300 */
+  --yellow-150: oklch(0.4191 0.0871 78.9); /* #664600 */
+  --yellow-500: oklch(0.8417 0.1602 81.7); /* #ffbf33 */
+
+  --action: oklch(0.9581 0 0); /* #f1f1f1 */
+  --action-foreground: oklch(0.1543 0 0);
+}
+
+/* Aliases, on both selectors on purpose: a custom property holding `var()`
+   is substituted where it is declared, so `:root` alone would compute the
+   light values once and every `.dark` subtree would inherit them. */
+:root,
+.dark {
+  --background: var(--surface-background);
+  --foreground: var(--ink-heading);
+  --card: var(--surface-background);
+  --card-foreground: var(--ink-heading);
+  --popover: var(--surface-menu);
+  --popover-foreground: var(--ink-heading);
+  --primary: var(--action);
+  --primary-foreground: var(--action-foreground);
+  --secondary: var(--surface-foreground-1);
+  --secondary-foreground: var(--ink-body-2);
+  --muted: var(--surface-foreground-2);
+  --muted-foreground: var(--ink-caption-1);
+  --accent: var(--surface-foreground-2);
+  --accent-foreground: var(--ink-heading);
+  --destructive: var(--red-500);
+  --border: var(--surface-stroke-1);
+  --input: var(--surface-stroke-2);
+  --ring: var(--blue-500);
+  --radius: 0.375rem;
+  --chart-1: var(--blue-500);
+  --chart-2: var(--green-500);
+  --chart-3: var(--yellow-500);
+  --chart-4: var(--red-500);
+  --chart-5: var(--ink-caption-1);
+  --sidebar: var(--surface-background);
+  --sidebar-foreground: var(--ink-body-2);
+  --sidebar-primary: var(--action);
+  --sidebar-primary-foreground: var(--action-foreground);
+  --sidebar-accent: var(--surface-foreground-2);
+  --sidebar-accent-foreground: var(--ink-heading);
+  --sidebar-border: var(--surface-stroke-1);
+  --sidebar-ring: var(--blue-500);
+}
+
+/* In dark the accent steps up a rung: the menu ground is surface-2, so a
+   hover has to separate from it. */
+.dark {
+  --accent: var(--surface-foreground-3);
+}

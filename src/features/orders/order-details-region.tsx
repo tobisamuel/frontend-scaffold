@@ -63,7 +63,7 @@ export const OrderDetailsRegion = ({ orderId }: { orderId: string }) => {
   return (
     <div className="flex flex-1 flex-col gap-6 px-4">
       <div className="flex items-center justify-between gap-4">
-        <p className="text-2xl font-semibold tabular-nums">
+        <p className="text-heading-md font-semibold text-ink-heading tabular-nums">
           {formatMoney(order.total, order.currency)}
         </p>
         <Badge variant={orderStatusMeta[order.status].variant}>
@@ -71,10 +71,10 @@ export const OrderDetailsRegion = ({ orderId }: { orderId: string }) => {
         </Badge>
       </div>
 
-      <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3 text-sm">
-        <dt className="text-muted-foreground">Order</dt>
+      <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3 text-body-md">
+        <dt className="text-ink-caption-1">Order</dt>
         <dd>{order.number}</dd>
-        <dt className="text-muted-foreground">Customer</dt>
+        <dt className="text-ink-caption-1">Customer</dt>
         <dd>
           <Link
             className="underline-offset-4 hover:underline"
@@ -84,17 +84,17 @@ export const OrderDetailsRegion = ({ orderId }: { orderId: string }) => {
             {order.customer_name}
           </Link>
         </dd>
-        <dt className="text-muted-foreground">Items</dt>
+        <dt className="text-ink-caption-1">Items</dt>
         <dd>{order.items_count}</dd>
-        <dt className="text-muted-foreground">Created</dt>
+        <dt className="text-ink-caption-1">Created</dt>
         <dd>{format(parseISO(order.created_at), "MMM d, yyyy, h:mm a")}</dd>
-        <dt className="text-muted-foreground">Cancelled</dt>
+        <dt className="text-ink-caption-1">Cancelled</dt>
         <dd>
           {order.cancelled_at
             ? format(parseISO(order.cancelled_at), "MMM d, yyyy, h:mm a")
             : "—"}
         </dd>
-        <dt className="text-muted-foreground">Note</dt>
+        <dt className="text-ink-caption-1">Note</dt>
         <dd>{order.note ?? "—"}</dd>
       </dl>
 

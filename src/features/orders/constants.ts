@@ -7,11 +7,11 @@ type BadgeVariant = NonNullable<Parameters<typeof badgeVariants>[0]>["variant"];
  * pinned with `satisfies` so a new contract status fails here at compile time.
  */
 export const orderStatusMeta = {
-  cancelled: { label: "Cancelled", variant: "destructive" },
-  delivered: { label: "Delivered", variant: "secondary" },
-  pending: { label: "Pending", variant: "outline" },
-  processing: { label: "Processing", variant: "outline" },
-  shipped: { label: "Shipped", variant: "secondary" },
+  cancelled: { label: "Cancelled", variant: "red" },
+  delivered: { label: "Delivered", variant: "green" },
+  pending: { label: "Pending", variant: "yellow" },
+  processing: { label: "Processing", variant: "blue" },
+  shipped: { label: "Shipped", variant: "neutral" },
 } as const satisfies Record<
   "cancelled" | "delivered" | "pending" | "processing" | "shipped",
   { label: string; variant: BadgeVariant }

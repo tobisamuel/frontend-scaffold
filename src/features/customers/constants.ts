@@ -9,9 +9,9 @@ type BadgeVariant = NonNullable<Parameters<typeof badgeVariants>[0]>["variant"];
  * vocabulary; this is only its presentation.
  */
 export const customerStatusMeta = {
-  active: { label: "Active", variant: "secondary" },
-  invited: { label: "Invited", variant: "outline" },
-  suspended: { label: "Suspended", variant: "destructive" },
+  active: { label: "Active", variant: "green" },
+  invited: { label: "Invited", variant: "neutral" },
+  suspended: { label: "Suspended", variant: "red" },
 } as const satisfies Record<
   "active" | "invited" | "suspended",
   { label: string; variant: BadgeVariant }

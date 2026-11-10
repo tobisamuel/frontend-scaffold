@@ -71,6 +71,24 @@ export default defineConfig({
     // `onBlur={field.onBlur}`) is clearer than wrapping it to earn a
     // `handle*` name.
     "react/jsx-handler-names": "off",
+    // @shadcn/lint maps every `border-*` prefix to `border-color` and never
+    // reads Tailwind's `--border-width-*` namespace, so the declared hairline
+    // width reads as an undeclared colour. Exempted by name until upstream
+    // learns the namespace.
+    "shadcn/no-raw-colors": [
+      "error",
+      {
+        allow: [
+          "border-hairline",
+          "border-t-hairline",
+          "border-r-hairline",
+          "border-b-hairline",
+          "border-l-hairline",
+          "border-s-hairline",
+          "border-e-hairline",
+        ],
+      },
+    ],
   },
   // oxlint does not merge `settings` from extended configs, so the js-plugin
   // settings must sit on the root. Curated mode keeps react-doctor's

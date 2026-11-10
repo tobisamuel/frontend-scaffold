@@ -29,20 +29,20 @@ const CustomerOverview = () => {
       </CardHeader>
       <CardContent>
         {customer ? (
-          <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3 text-sm">
-            <dt className="text-muted-foreground">Email</dt>
+          <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3 text-body-md">
+            <dt className="text-ink-caption-1">Email</dt>
             <dd>{customer.email}</dd>
-            <dt className="text-muted-foreground">Company</dt>
+            <dt className="text-ink-caption-1">Company</dt>
             <dd>{customer.company}</dd>
-            <dt className="text-muted-foreground">Country</dt>
+            <dt className="text-ink-caption-1">Country</dt>
             <dd>{customer.country}</dd>
-            <dt className="text-muted-foreground">Credit limit</dt>
+            <dt className="text-ink-caption-1">Credit limit</dt>
             <dd className="tabular-nums">
               {formatMoney(customer.credit_limit, "USD")}
             </dd>
-            <dt className="text-muted-foreground">Orders</dt>
+            <dt className="text-ink-caption-1">Orders</dt>
             <dd className="tabular-nums">{customer.orders_count}</dd>
-            <dt className="text-muted-foreground">Joined</dt>
+            <dt className="text-ink-caption-1">Joined</dt>
             <dd>{format(parseISO(customer.created_at), "MMM d, yyyy")}</dd>
           </dl>
         ) : (
